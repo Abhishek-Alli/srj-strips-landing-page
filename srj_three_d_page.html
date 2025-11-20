@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SRJ Strips & Pipes - Excellence in Steel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;500;700&family=Roboto:wght@300;400&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrolling for the landing demo */
+            background-color: #0a0a0a;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        h1, h2, h3, .brand-font {
+            font-family: 'Oswald', sans-serif;
+        }
+
+        /* UI Overlay z-index handling */
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #ui-layer {
+            position: relative;
+            z-index: 10;
+            pointer-events: none; /* Let clicks pass through to canvas where needed, re-enable on buttons */
+        }
+
+        .interactive {
+            pointer-events: auto;
+        }
+
+        /* Custom scrollbar hide */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .text-glow {
+            text-shadow: 0 0 20px rgba(255, 100, 0, 0.5);
+        }
+
+        .section-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .section-content.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Layer -->
+    <div id="ui-layer" class="w-full h-full flex flex-col justify-between p-6 md:p-12 text-white">
+        
+        <!-- Header -->
+        <nav class="flex justify-between items-center relative z-50">
+            <div class="flex items-center gap-2 interactive cursor-pointer" onclick="showSection('hero')">
+                <div class="w-8 h-8 bg-orange-600 rounded-sm transform rotate-45"></div>
+                <span class="text-2xl font-bold tracking-widest uppercase brand-font">SRJ<span class="text-orange-500">STRIPS</span></span>
+            </div>
+            
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex gap-8 font-light text-sm tracking-wide interactive items-center">
+                <button onclick="showSection('coils')" class="hover:text-orange-500 transition-colors uppercase">Coils & Strips</button>
+                <button onclick="showSection('pipes')" class="hover:text-orange-500 transition-colors uppercase">Pipes & Tubes</button>
+                <button onclick="showSection('tmt')" class="hover:text-orange-500 transition-colors uppercase">TMT Bars</button>
+                <button onclick="showSection('contact')" class="hover:text-orange-500 transition-colors uppercase">Contact</button>
+                <button onclick="toggleChat()" class="flex items-center gap-2 border border-orange-500 text-orange-500 px-4 py-1 hover:bg-orange-600 hover:text-white transition-all uppercase text-xs font-bold tracking-wider">
+                    <span>Ask AI Expert</span>
+                    <span>✨</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden interactive text-white z-50">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 hidden flex-col items-center justify-center gap-8 interactive">
+            <button onclick="showSection('coils'); toggleMobileMenu()" class="text-2xl uppercase font-bold hover:text-orange-500">Coils</button>
+            <button onclick="showSection('pipes'); toggleMobileMenu()" class="text-2xl uppercase font-bold hover:text-orange-500">Pipes</button>
+            <button onclick="showSection('tmt'); toggleMobileMenu()" class="text-2xl uppercase font-bold hover:text-orange-500">TMT Bars</button>
+            <button onclick="showSection('contact'); toggleMobileMenu()" class="text-2xl uppercase font-bold hover:text-orange-500">Contact</button>
+            <button onclick="toggleMobileMenu()" class="text-gray-500 mt-8">Close</button>
+        </div>
+
+        <!-- CONTENT AREA -->
+        <div id="main-content-area" class="flex-1 relative mt-8">
+
+            <!-- SECTION: HERO (Default) -->
+            <div id="hero" class="section-content active flex-col md:flex-row items-end md:items-center justify-between w-full h-full">
+                <!-- Main Text -->
+                <div class="w-full md:w-1/2 mb-12 md:mb-0">
+                    <div class="overflow-hidden mb-2">
+                        <h2 class="text-orange-500 tracking-widest uppercase text-sm font-bold animate-pulse">SRJ STRIPS & PIPES</h2>
+                    </div>
+                    <h1 class="text-6xl md:text-8xl font-bold uppercase leading-none mb-6">
+                        Quality <br/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-500">In Every Coil.</span>
+                    </h1>
+                    <p class="text-gray-400 max-w-md text-lg font-light mb-8">
+                        Premier manufacturers of High-Grade Steel Coils, Precision Pipes, and TMT Bars. Building the nation's infrastructure with unyielding strength.
+                    </p>
+                    <div class="flex gap-4 interactive">
+                        <button onclick="showSection('tmt')" class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 uppercase font-bold tracking-wider transition-all transform hover:scale-105 clip-path-slant">
+                            Order TMT
+                        </button>
+                        <button onclick="showSection('catalog')" class="border border-gray-600 hover:border-white hover:bg-white hover:text-black text-gray-300 px-8 py-4 uppercase font-bold tracking-wider transition-all glass-panel">
+                            View Catalog
+                        </button>
+                    </div>
+                </div>
+                <!-- Stats Panel -->
+                <div class="w-full md:w-1/3 interactive">
+                    <div class="glass-panel p-6 rounded-sm">
+                        <h3 class="text-xl font-bold mb-4 brand-font uppercase">Production Specs</h3>
+                        <div class="flex justify-between border-b border-gray-700 pb-2 mb-2">
+                            <span class="text-gray-400 text-sm">TMT Grade</span>
+                            <span class="font-mono text-orange-400">Fe 550D</span>
+                        </div>
+                        <div class="flex justify-between border-b border-gray-700 pb-2 mb-2">
+                            <span class="text-gray-400 text-sm">Pipe Diameter</span>
+                            <span class="font-mono text-orange-400">0.5" - 12"</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400 text-sm">Coil Thickness</span>
+                            <span class="font-mono text-green-400">0.1mm - 8mm</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: COILS -->
+            <div id="coils" class="section-content flex-col justify-center items-start w-full h-full pl-4 md:pl-20">
+                <h2 class="text-orange-500 tracking-widest uppercase text-sm font-bold mb-2">Product Line</h2>
+                <h1 class="text-5xl md:text-7xl font-bold uppercase mb-6">Cold Rolled <br/><span class="text-gray-400">Strips & Coils</span></h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 interactive w-full max-w-4xl">
+                    <div class="glass-panel p-6 border-l-4 border-orange-600">
+                        <h3 class="text-xl font-bold mb-2">Precision CR Strips</h3>
+                        <p class="text-sm text-gray-400 mb-4">High surface finish, uniform thickness, perfect for automotive parts.</p>
+                        <ul class="text-xs text-gray-300 font-mono space-y-1">
+                            <li>Thickness: 0.1mm - 3.0mm</li>
+                            <li>Width: 5mm - 450mm</li>
+                            <li>Hardness: Soft, Half Hard, Full Hard</li>
+                        </ul>
+                    </div>
+                    <div class="glass-panel p-6 border-l-4 border-white">
+                        <h3 class="text-xl font-bold mb-2">Galvanized Coils</h3>
+                        <p class="text-sm text-gray-400 mb-4">Corrosion-resistant coating for roofing and structural use.</p>
+                        <ul class="text-xs text-gray-300 font-mono space-y-1">
+                            <li>Coating: Z120 - Z275</li>
+                            <li>Finish: Regular Spangle / Zero Spangle</li>
+                        </ul>
+                    </div>
+                </div>
+                <button onclick="showSection('hero')" class="mt-8 text-gray-500 hover:text-white interactive uppercase text-sm">&larr; Back to Home</button>
+            </div>
+
+            <!-- SECTION: PIPES -->
+            <div id="pipes" class="section-content flex-col justify-center items-start w-full h-full pl-4 md:pl-20">
+                <h2 class="text-orange-500 tracking-widest uppercase text-sm font-bold mb-2">Structural Integrity</h2>
+                <h1 class="text-5xl md:text-7xl font-bold uppercase mb-6">Pipes <br/><span class="text-gray-400">& Hollow Sections</span></h1>
+                <div class="flex flex-col md:flex-row gap-6 interactive w-full max-w-5xl">
+                    <div class="glass-panel p-6 flex-1">
+                        <h3 class="text-2xl font-bold mb-2 text-orange-400">Round Pipes</h3>
+                        <p class="text-sm text-gray-300 mb-4">ERW and Seamless pipes for water, gas, and structural scaffolding.</p>
+                        <div class="h-1 w-full bg-gray-700 rounded overflow-hidden"><div class="h-full bg-orange-500 w-3/4"></div></div>
+                        <span class="text-xs mt-2 block text-gray-500">Availability: 95% Stock</span>
+                    </div>
+                    <div class="glass-panel p-6 flex-1">
+                        <h3 class="text-2xl font-bold mb-2 text-blue-400">Square / Rectangular</h3>
+                        <p class="text-sm text-gray-300 mb-4">RHS and SHS hollow sections for construction framework.</p>
+                        <div class="h-1 w-full bg-gray-700 rounded overflow-hidden"><div class="h-full bg-blue-500 w-1/2"></div></div>
+                         <span class="text-xs mt-2 block text-gray-500">Availability: Made to Order</span>
+                    </div>
+                </div>
+                <button onclick="showSection('hero')" class="mt-8 text-gray-500 hover:text-white interactive uppercase text-sm">&larr; Back to Home</button>
+            </div>
+
+            <!-- SECTION: TMT -->
+            <div id="tmt" class="section-content flex-col justify-center items-center w-full h-full text-center">
+                <div class="glass-panel p-12 max-w-3xl interactive">
+                    <h1 class="text-6xl font-bold uppercase mb-4 text-orange-600 text-glow">SRJ TMT Fe 550D</h1>
+                    <p class="text-xl text-white mb-8 font-light">
+                        Engineered for seismic zones. Superior ductility meets diamond-hard strength.
+                    </p>
+                    <div class="grid grid-cols-3 gap-4 text-left">
+                        <div class="p-4 bg-black/30 border border-gray-700">
+                            <h4 class="font-bold text-orange-400">Elongation</h4>
+                            <p class="text-sm text-gray-400">18% Min (High Ductility)</p>
+                        </div>
+                        <div class="p-4 bg-black/30 border border-gray-700">
+                            <h4 class="font-bold text-orange-400">Sulfur/Phos</h4>
+                            <p class="text-sm text-gray-400">Low (0.040% Max)</p>
+                        </div>
+                        <div class="p-4 bg-black/30 border border-gray-700">
+                            <h4 class="font-bold text-orange-400">Bond Strength</h4>
+                            <p class="text-sm text-gray-400">Advanced Rib Pattern</p>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="showSection('hero')" class="mt-8 text-gray-500 hover:text-white interactive uppercase text-sm">&larr; Back to Home</button>
+            </div>
+
+             <!-- SECTION: CONTACT -->
+             <div id="contact" class="section-content flex-col justify-center items-end w-full h-full pr-4 md:pr-20">
+                <div class="glass-panel p-8 max-w-md w-full interactive border-r-4 border-orange-600">
+                    <h2 class="text-3xl font-bold uppercase mb-6">Get In Touch</h2>
+                    <form onsubmit="event.preventDefault(); alert('Thank you! We will contact you shortly.');" class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-gray-400 uppercase mb-1">Name</label>
+                            <input type="text" class="w-full bg-gray-900 border border-gray-600 p-2 text-white focus:border-orange-500 outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 uppercase mb-1">Email</label>
+                            <input type="email" class="w-full bg-gray-900 border border-gray-600 p-2 text-white focus:border-orange-500 outline-none" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 uppercase mb-1">Interest</label>
+                            <select class="w-full bg-gray-900 border border-gray-600 p-2 text-white focus:border-orange-500 outline-none">
+                                <option>Bulk Order (Pipes)</option>
+                                <option>TMT Requirements</option>
+                                <option>Coils / Strips</option>
+                            </select>
+                        </div>
+                        <button class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 uppercase tracking-widest transition-colors">
+                            Send Request
+                        </button>
+                    </form>
+                    <div class="mt-8 pt-4 border-t border-gray-700 text-xs text-gray-400">
+                        <p>📍 Plot No 45, Industrial Area, Phase II</p>
+                        <p>📞 +91 98765 43210</p>
+                        <p>📧 sales@srjstrips.com</p>
+                    </div>
+                </div>
+                <button onclick="showSection('hero')" class="mt-8 text-gray-500 hover:text-white interactive uppercase text-sm">&larr; Back to Home</button>
+            </div>
+
+            <!-- SECTION: CATALOG (Simple List) -->
+            <div id="catalog" class="section-content flex-col justify-center items-center w-full h-full">
+                 <div class="glass-panel p-8 interactive w-full max-w-4xl h-[60vh] overflow-y-auto">
+                    <h2 class="text-3xl font-bold uppercase mb-6 sticky top-0 bg-black/50 backdrop-blur-md py-2">Full Catalog</h2>
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-gray-400 uppercase border-b border-gray-700">
+                            <tr><th class="py-2">Product</th><th class="py-2">Specs</th><th class="py-2">Grade</th></tr>
+                        </thead>
+                        <tbody class="text-gray-300 divide-y divide-gray-800">
+                            <tr><td class="py-3">MS Pipe (Round)</td><td>1/2" to 6"</td><td>IS 1239</td></tr>
+                            <tr><td class="py-3">GI Pipe</td><td>1/2" to 4"</td><td>IS 1239</td></tr>
+                            <tr><td class="py-3">Square Hollow Section</td><td>20x20 to 100x100</td><td>IS 4923</td></tr>
+                            <tr><td class="py-3">Rectangular Hollow Section</td><td>40x20 to 120x60</td><td>IS 4923</td></tr>
+                            <tr><td class="py-3">CR Coil</td><td>0.12mm - 2.0mm</td><td>IS 513</td></tr>
+                            <tr><td class="py-3">HR Coil</td><td>1.6mm - 8.0mm</td><td>IS 10748</td></tr>
+                            <tr><td class="py-3">TMT Bar</td><td>8mm</td><td>Fe 550D</td></tr>
+                            <tr><td class="py-3">TMT Bar</td><td>10mm - 25mm</td><td>Fe 550D</td></tr>
+                        </tbody>
+                    </table>
+                 </div>
+                 <button onclick="showSection('hero')" class="mt-8 text-gray-500 hover:text-white interactive uppercase text-sm">&larr; Back to Home</button>
+            </div>
+
+        </div>
+
+        <!-- AI Chat Widget (Hidden by default) -->
+        <div id="ai-chat-modal" class="fixed bottom-8 right-8 w-96 h-[500px] glass-panel z-50 interactive hidden flex-col shadow-2xl border border-orange-500/30 transform transition-all duration-300 translate-y-10 opacity-0">
+            <!-- Chat Header -->
+            <div class="p-4 border-b border-gray-700 bg-black/40 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-white">SRJ Smart Consultant ✨</h3>
+                </div>
+                <button onclick="toggleChat()" class="text-gray-400 hover:text-white text-xl">&times;</button>
+            </div>
+            
+            <!-- Chat Body -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4 text-sm font-light scrollbar-hide">
+                <div class="bg-gray-800/50 p-3 rounded-br-xl rounded-bl-xl rounded-tr-xl max-w-[85%] border border-gray-700 text-gray-300">
+                    Hello. I am the SRJ technical AI assistant. Describe your project (e.g., "Building a 2-story home"), and I will recommend the correct TMT bars and pipes.
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-gray-700 bg-black/40">
+                <div class="flex gap-2">
+                    <input type="text" id="user-input" placeholder="Ask about steel grades..." class="w-full bg-gray-900/80 border border-gray-600 rounded p-2 text-white text-sm focus:outline-none focus:border-orange-500 transition-colors" onkeypress="handleKeyPress(event)">
+                    <button onclick="sendMessage()" class="bg-orange-600 hover:bg-orange-700 text-white px-3 rounded transition-colors">
+                        &uarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer ticker -->
+        <div class="w-full py-4 border-t border-gray-800 flex justify-between text-xs text-gray-500 uppercase tracking-widest">
+            <span>ISO 9001:2015 Certified</span>
+            <span>Global Logistics Network</span>
+            <span>Fabricated in USA / EU</span>
+        </div>
+    </div>
+
+    <!-- THREE.JS Implementation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // --- UI & NAVIGATION LOGIC ---
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Show target section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Optional: Move camera slightly based on section
+            if (typeof camera !== 'undefined') {
+                const targets = {
+                    'hero': { x: 0, y: 1, z: 14 },
+                    'coils': { x: -5, y: 2, z: 10 },
+                    'pipes': { x: 5, y: -2, z: 10 },
+                    'tmt': { x: 0, y: 0, z: 8 }, // Closer zoom
+                    'contact': { x: 2, y: 4, z: 12 },
+                    'catalog': { x: 0, y: 0, z: 16 } // Zoom out
+                };
+                const t = targets[sectionId] || targets['hero'];
+                // We just set a target variable that the animate loop moves towards
+                window.camTarget = t;
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if(menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+            }
+        }
+
+        // --- AI CHAT LOGIC ---
+        const chatModal = document.getElementById('ai-chat-modal');
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        let isChatOpen = false;
+
+        function toggleChat() {
+            isChatOpen = !isChatOpen;
+            if (isChatOpen) {
+                chatModal.classList.remove('hidden');
+                setTimeout(() => {
+                    chatModal.classList.remove('translate-y-10', 'opacity-0');
+                }, 10);
+                userInput.focus();
+            } else {
+                chatModal.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    chatModal.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            userInput.value = '';
+            const loadingId = addMessage('Analyzing requirements...', 'bot', true);
+
+            try {
+                const apiKey = "gen-lang-client-0279072303"; // System provides key
+                const systemPrompt = `You are a senior metallurgical sales engineer for SRJ STRIPS & PIPES. 
+                User Query: "${text}"
+                Recommend SRJ products (TMT Fe 550D, Pipes, Coils). Keep it concise.`;
+
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: systemPrompt }] }]
+                    })
+                });
+
+                const data = await response.json();
+                const botReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "I apologize, I cannot access the catalog right now.";
+                document.getElementById(loadingId).remove();
+                addMessage(botReply, 'bot');
+            } catch (error) {
+                document.getElementById(loadingId).remove();
+                addMessage("Connection error. Please try again.", 'bot');
+            }
+        }
+
+        function addMessage(text, sender, isLoading = false) {
+            const div = document.createElement('div');
+            const isUser = sender === 'user';
+            const id = 'msg-' + Date.now();
+            div.id = id;
+            div.className = isUser 
+                ? "ml-auto bg-orange-600/20 border border-orange-500/50 text-white p-3 rounded-tl-xl rounded-bl-xl rounded-tr-xl max-w-[85%] mb-2"
+                : "bg-gray-800/50 border border-gray-700 text-gray-300 p-3 rounded-br-xl rounded-bl-xl rounded-tr-xl max-w-[85%] mb-2";
+            div.innerHTML = isLoading ? `<div class="flex gap-1"><div class="w-2 h-2 bg-orange-500 rounded-full animate-bounce"></div></div>` : text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return id;
+        }
+
+        // --- 1. Scene Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.035);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        // Initial Camera target (for animation reference)
+        window.camTarget = { x: 0, y: 1, z: 14 };
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        container.appendChild(renderer.domElement);
+
+        // --- 2. Objects (Pipes, Coils, TMT) ---
+        const geometryGroup = new THREE.Group();
+        const steelMaterial = new THREE.MeshStandardMaterial({ color: 0x334455, metalness: 0.9, roughness: 0.3 });
+        const tmtMaterial = new THREE.MeshStandardMaterial({ color: 0x2a3b4c, metalness: 0.8, roughness: 0.7 });
+
+        for(let i = 0; i < 25; i++) {
+            const type = Math.random();
+            let mesh;
+            if (type < 0.4) { // Pipe
+                const geo = new THREE.CylinderGeometry(Math.random()*0.5+0.2, Math.random()*0.5+0.2, Math.random()*15+5, 16);
+                mesh = new THREE.Mesh(geo, steelMaterial);
+            } else if (type < 0.7) { // Coil
+                const geo = new THREE.TorusGeometry(Math.random()*2+1, Math.random()*0.5+0.1, 8, 30);
+                mesh = new THREE.Mesh(geo, steelMaterial);
+            } else { // TMT
+                const geo = new THREE.CylinderGeometry(0.15, 0.15, Math.random()*20+5, 8);
+                mesh = new THREE.Mesh(geo, tmtMaterial);
+            }
+            mesh.position.set((Math.random()-0.5)*12, (Math.random()-0.5)*12, (Math.random()-0.5)*8);
+            mesh.rotation.set(Math.random()*0.5, Math.random()*Math.PI, (Math.random()>0.5?0:Math.PI/2)+Math.random()*0.4);
+            geometryGroup.add(mesh);
+        }
+        const mainCoil = new THREE.Mesh(new THREE.TorusGeometry(3.5, 1.2, 16, 50), steelMaterial);
+        mainCoil.rotation.y = Math.PI / 3;
+        geometryGroup.add(mainCoil);
+        scene.add(geometryGroup);
+
+        // --- 3. Lighting ---
+        scene.add(new THREE.AmbientLight(0x406080, 0.5));
+        const spotLight = new THREE.SpotLight(0xffffff, 2);
+        spotLight.position.set(10, 20, 10);
+        scene.add(spotLight);
+        const furnaceLight = new THREE.PointLight(0xff4500, 3, 20);
+        furnaceLight.position.set(0, -5, 2);
+        scene.add(furnaceLight);
+
+        // --- 4. Particles ---
+        const particlesGeo = new THREE.BufferGeometry();
+        const pCount = 700;
+        const pPos = new Float32Array(pCount * 3);
+        for(let i=0; i<pCount*3; i++) pPos[i] = (Math.random()-0.5)*30;
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+        const particlesMesh = new THREE.Points(particlesGeo, new THREE.PointsMaterial({size: 0.05, color: 0xffaa00, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending}));
+        scene.add(particlesMesh);
+
+        // --- 5. Animation Loop ---
+        camera.position.set(0, 1, 14);
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth/2) * 0.001;
+            mouseY = (e.clientY - window.innerHeight/2) * 0.001;
+        });
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        const clock = new THREE.Clock();
+        function animate() {
+            const time = clock.getElapsedTime();
+            
+            // Rotate Group
+            geometryGroup.rotation.y += 0.002;
+            geometryGroup.rotation.x += 0.05 * (mouseY * 0.5 - geometryGroup.rotation.x);
+
+            // Smooth Camera Transitions to Section Target
+            if(window.camTarget) {
+                camera.position.x += (window.camTarget.x + mouseX * 5 - camera.position.x) * 0.02;
+                camera.position.y += (window.camTarget.y - mouseY * 5 - camera.position.y) * 0.02;
+                camera.position.z += (window.camTarget.z - camera.position.z) * 0.02;
+            }
+            camera.lookAt(scene.position);
+
+            // Particle Float
+            const pos = particlesMesh.geometry.attributes.position.array;
+            for(let i=1; i<pCount*3; i+=3) {
+                pos[i] += 0.01;
+                if(pos[i]>15) pos[i] = -15;
+            }
+            particlesMesh.geometry.attributes.position.needsUpdate = true;
+            
+            furnaceLight.intensity = 2 + Math.sin(time * 10) * 0.5 + Math.random() * 0.2;
+
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
